@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avanzare V19.0</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CSS Variables --- */
+        :root {
+            --primary-gold: #d9a05b;
+            --bg-dark: #0a0a0f;
+            --banner-red: #8b1a20;
+            --text-muted: #a4a4ac;
+            --footer-bg: #000000;
+            --card-bg: rgba(20, 20, 25, 0.6);
+            --card-border: rgba(255, 255, 255, 0.08);
+        }
+
+        /* --- Smooth Scrolling --- */
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 130px; 
+        }
+
+        /* --- Global Styles --- */
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        body, a, button, .btn, .social-circle, [role="button"], .filter-btn {
+            cursor: none !important;
+        }
+
+        /* --- Magical Static Spark Cursor Particle styling --- */
+        .magic-spark {
+            position: fixed; pointer-events: none; border-radius: 50%;
+            z-index: 100000; mix-blend-mode: screen;
+            transform: translate(-50%, -50%); will-change: transform, opacity;
+            animation: sparkFadeOut 0.8s forwards ease-out;
+        }
+
+        @keyframes sparkFadeOut {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
+            100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.1); }
+        }
+
+        /* --- Preloader / Loading Video Styles --- */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark); z-index: 999999;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+            cursor: pointer;
+        }
+        #preloader video {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; transition: filter 0.5s ease;
+        }
+        #preloader.pop-out {
+            opacity: 0; transform: scale(1.3); pointer-events: none;
+        }
+
+        /* --- Floating Music Toggle Button --- */
+        .music-fab {
+            position: fixed; bottom: 30px; left: 30px; width: 50px; height: 50px;
+            background-color: rgba(20, 20, 25, 0.6); backdrop-filter: blur(10px);
+            border: 1px solid rgba(217, 160, 91, 0.4); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--primary-gold); font-size: 1.1rem;
+            z-index: 9998; cursor: pointer; transition: all 0.3s ease;
+        }
+        .music-fab:hover { background-color: var(--primary-gold); color: #000; transform: scale(1.1); }
+
+        /* audio prompt removed */
+
+        /* --- Natural Light-Shifting Ambient Background Layers --- */
+        .ambient-glow-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2; pointer-events: none; overflow: hidden;
+            animation: skyToneShift 30s infinite alternate ease-in-out;
+        }
+
+        .ambient-light-orb {
+            position: absolute; border-radius: 50%; filter: blur(140px);
+            mix-blend-mode: screen; will-change: transform;
+            animation: shiftAmbientLights 24s infinite alternate ease-in-out;
+        }
+
+        .orb-crimson {
+            width: 800px; height: 800px; background: radial-gradient(circle, rgba(139, 26, 32, 0.35) 0%, transparent 70%);
+            top: -5%; right: -10%; animation-duration: 20s;
+        }
+
+        .orb-purple {
+            width: 900px; height: 900px; background: radial-gradient(circle, rgba(85, 40, 100, 0.45) 0%, transparent 70%);
+            bottom: -20%; right: -5%; animation-duration: 28s; animation-delay: -4s;
+        }
+
+        .orb-gold {
+            width: 700px; height: 700px; background: radial-gradient(circle, rgba(217, 160, 91, 0.15) 0%, transparent 70%);
+            top: 25%; left: 15%; animation-duration: 24s; animation-delay: -8s;
+        }
+
+        @keyframes skyToneShift {
+            0% { background-color: #120e1a; }   
+            50% { background-color: #0b0a14; }  
+            100% { background-color: #050508; }   
+        }
+
+        @keyframes shiftAmbientLights {
+            0% { transform: translate(0px, 0px) scale(1); opacity: 0.5; }
+            50% { transform: translate(-80px, 50px) scale(1.15); opacity: 0.8; }
+            100% { transform: translate(60px, -40px) scale(0.9); opacity: 0.4; }
+        }
+
+        /* --- Moving Starfield Background --- */
+        #starfield {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: -1;
+        }
+
+        .star {
+            position: absolute; background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%; will-change: transform, opacity;
+            animation: moveStar linear infinite;
+        }
+
+        @keyframes moveStar {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-150px) translateX(20px) scale(0.5); opacity: 0; }
+        }
+
+        /* --- Header & Navbar --- */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1050;
+            width: 100%;
+        }
+
+        /* --- Marquee --- */
+        .top-banner {
+            background-color: var(--banner-red); position: relative; z-index: 1001; 
+            overflow: hidden; padding: 10px 0; display: flex; align-items: center;
+        }
+        .marquee-container {
+            display: flex; white-space: nowrap; width: max-content;
+            animation: marquee 20s linear infinite;
+        }
+        .marquee-content {
+            display: flex; align-items: center; justify-content: space-around;
+        }
+        .banner-item {
+            color: white; font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600;
+            display: flex; align-items: center; padding: 0 40px;
+        }
+        .btn-register-small {
+            border: 1px solid rgba(255, 255, 255, 0.5); color: white; font-size: 0.68rem;
+            padding: 4px 14px; background: transparent; text-decoration: none; margin-left: 15px;
+            transition: 0.3s; letter-spacing: 1px; display: inline-block; border-radius: 3px;
+        }
+        .btn-register-small:hover { background: rgba(255, 255, 255, 0.1); color: white; }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } 
+        }
+
+        /* --- Navbar --- */
+        .navbar {
+            padding: 10px 4%; border-bottom: 1px solid rgba(255, 255, 255, 0);
+            background-color: transparent; 
+            transition: background-color 0.4s ease, box-shadow 0.4s ease, padding 0.4s ease;
+        }
+        .navbar.scrolled {
+            background-color: rgba(0, 0, 0, 0.98); 
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .navbar-brand { display: flex; align-items: center; margin-right: 0; }
+        .nav-logo-img { width: 95px; height: 50px; object-fit: contain; margin-right: 18px; display: inline-block; }
+        .logo-text { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; line-height: 1.1; color: white; }
+        .logo-subtext { font-size: 0.6rem; letter-spacing: 2px; color: var(--text-muted); text-transform: uppercase; margin-top: 2px; }
+
+        .nav-link {
+            font-size: 0.75rem; letter-spacing: 2px; color: var(--text-muted) !important;
+            text-transform: uppercase; margin: 0 14px; transition: color 0.3s ease; font-weight: 600;
+        }
+        .nav-link:hover { color: var(--primary-gold) !important; }
+
+        /* --- Buttons --- */
+        .btn-gold {
+            background-color: var(--primary-gold); color: #000; font-weight: 700; font-size: 0.78rem;
+            letter-spacing: 2px; border: none; border-radius: 2px; padding: 10px 24px;
+            text-transform: uppercase; text-decoration: none; position: relative; 
+            transition: background-color 0.3s ease; display: inline-block;
+        }
+        .btn-gold::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border: 1px solid var(--primary-gold); border-radius: inherit; z-index: -1;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); opacity: 0;
+        }
+        .btn-gold:hover { background-color: #e5b273; color: #000; }
+        .btn-gold:hover::before { transform: scale(1.15, 1.4); opacity: 0; animation: pulseOutline 0.8s cubic-bezier(0.165, 0.84, 0.44, 1); }
+
+        .btn-outline-custom {
+            background: transparent; border: 1px solid rgba(255, 255, 255, 0.25); color: rgba(255, 255, 255, 0.8);
+            font-size: 0.65rem; letter-spacing: 2.5px; text-transform: uppercase; padding: 10px 20px;
+            font-weight: 600; transition: all 0.3s ease; border-radius: 2px; position: relative; text-decoration: none;
+        }
+        .btn-outline-custom::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border: 1px solid rgba(255, 255, 255, 0.6); border-radius: inherit; z-index: -1;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); opacity: 0;
+        }
+        .btn-outline-custom:hover { border-color: rgba(255, 255, 255, 1); color: white; }
+        .btn-outline-custom:hover::before { animation: pulseOutline 0.8s cubic-bezier(0.165, 0.84, 0.44, 1); }
+
+        .btn-outline-dark {
+            border: 1px solid rgba(255, 255, 255, 0.25); color: white; border-radius: 0;
+            padding: 12px 35px; font-size: 0.8rem; letter-spacing: 1.5px; font-weight: 600;
+            background: transparent; text-transform: uppercase; text-decoration: none; transition: all 0.3s ease;
+        }
+        .btn-outline-dark:hover { border-color: var(--primary-gold); color: var(--primary-gold); background: transparent; }
+
+        @keyframes pulseOutline {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.15, 1.4); opacity: 0; }
+        }
+
+        /* --- Hero Section & Canvas Container --- */
+        .hero-section { flex-grow: 1; display: flex; align-items: center; padding: 60px 4% 80px 4%; position: relative; z-index: 5; overflow: hidden; background: transparent; }
+        
+        .hero-subtitle { color: var(--primary-gold); font-size: 0.7rem; letter-spacing: 5px; margin-bottom: 25px; text-transform: uppercase; font-weight: 600;}
+        .title-hogwarts { font-family: 'Playfair Display', serif; font-size: clamp(4rem, 8vw, 8rem); font-weight: 700; line-height: 0.8; margin: 0; color: #ffffff; }
+        .title-techfest { font-family: 'Playfair Display', serif; font-size: clamp(4rem, 8vw, 8rem); font-weight: 400; line-height: 0.9; margin: 0; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4); }
+        .title-xxvi { color: var(--primary-gold); font-size: 2.5rem; font-weight: 700; letter-spacing: 8px; margin-top: 10px; }
+        .hero-divider { width: 50px; height: 1px; background-color: rgba(255, 255, 255, 0.4); margin: 35px 0; }
+        .hero-description { color: #c4c4cc; font-size: 1.1rem; line-height: 1.8; max-width: 450px; margin-bottom: 40px; }
+        .btn-group-custom { display: flex; gap: 15px; }
+
+        .glow-system { position: relative; width: 100%; height: auto; display: flex; align-items: center; justify-content: center; margin-bottom: 40px; }
+        .core-image { width: clamp(550px, 95%, 1200px); max-width: 100%; height: auto; object-fit: contain; border-radius: 10px; z-index: 10; }
+
+        .countdown-wrapper { display: flex; align-items: center; justify-content: center; gap: 20px; width: 100%; }
+        .begins-in { color: rgba(255, 255, 255, 0.6); font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; font-weight: 600; }
+        .countdown-timer { display: flex; align-items: center; gap: 15px; }
+        .time-block { display: flex; flex-direction: column; align-items: center; min-width: 60px; }
+        .time-block .number { font-family: 'Playfair Display', serif; color: var(--primary-gold); font-size: 2.8rem; font-weight: 700; line-height: 1; text-shadow: 0 4px 20px rgba(217, 160, 91, 0.2); }
+        .time-block .label { color: rgba(255, 255, 255, 0.5); font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; margin-top: 10px; font-weight: 600; }
+        .separator { color: rgba(217, 160, 91, 0.5); font-family: 'Playfair Display', serif; font-size: 2rem; margin-top: -20px; }
+
+        /* --- ABOUT & STATS SECTION --- */
+        .about-section { padding: 80px 4% 60px 4%; position: relative; z-index: 5; }
+        .about-subtitle { color: var(--primary-gold); font-size: 0.7rem; letter-spacing: 5px; text-transform: uppercase; font-weight: 600; margin-bottom: 20px; }
+        .about-title { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 5vw, 4.5rem); font-weight: 700; color: #ffffff; line-height: 1.1; margin-bottom: 35px; max-width: 600px; }
+        .about-desc { color: rgba(255, 255, 255, 0.75); font-size: 1.05rem; line-height: 1.8; margin-bottom: 20px; max-width: 550px; }
+        
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--card-border); border-radius: 6px; overflow: hidden; }
+        .stat-box { padding: 40px 30px; border-bottom: 1px solid var(--card-border); border-right: 1px solid var(--card-border); background: var(--card-bg); backdrop-filter: blur(5px); }
+        .stat-box:nth-child(even) { border-right: none; }
+        .stat-box.full-width { grid-column: span 2; border-bottom: none; border-right: none; }
+        .stat-number { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--primary-gold); font-weight: 700; margin-bottom: 8px; line-height: 1;}
+        .stat-label { font-size: 0.65rem; color: rgba(255,255,255,0.6); letter-spacing: 3px; text-transform: uppercase; font-weight: 600; }
+
+        /* --- QUOTE SECTION --- */
+        .quote-section { padding: 60px 4% 100px 4%; position: relative; z-index: 5; display: flex; justify-content: center; }
+        .quote-container { border-left: 2px solid var(--primary-gold); padding-left: 40px; max-width: 900px; }
+        .quote-text { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 3vw, 2.2rem); font-style: italic; color: #ffffff; line-height: 1.5; margin-bottom: 25px; }
+        .quote-author { color: rgba(255, 255, 255, 0.6); font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; font-weight: 600; }
+
+        /* --- EVENTS FILTER SECTION --- */
+        .events-section { padding: 40px 4% 80px 4%; position: relative; z-index: 5; flex-grow: 1; }
+        .section-subtitle { color: var(--primary-gold); font-size: 0.7rem; letter-spacing: 5px; text-transform: uppercase; font-weight: 600; margin-bottom: 10px; }
+        .section-title { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 6vw, 4.5rem); font-weight: 700; color: #ffffff; margin: 0; line-height: 1; }
+        .section-desc { color: rgba(255, 255, 255, 0.75); font-size: 1rem; line-height: 1.6; max-width: 400px; margin: 0; }
+        
+        .filter-nav { display: flex; gap: 30px; border-bottom: 1px solid rgba(255, 255, 255, 0.15); padding-bottom: 15px; margin-top: 50px; margin-bottom: 40px; overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
+        .filter-nav::-webkit-scrollbar { display: none; }
+        .filter-btn { background: none; border: none; color: var(--text-muted); font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; position: relative; padding: 5px 0; transition: color 0.3s; font-weight: 600; }
+        .filter-btn:hover { color: white; }
+        .filter-btn.active { color: var(--primary-gold); }
+        .filter-btn.active::after { content: ''; position: absolute; bottom: -16px; left: 0; width: 100%; height: 2px; background: var(--primary-gold); box-shadow: 0 0 12px var(--primary-gold); }
+
+        .event-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 35px; height: 100%; display: flex; flex-direction: column; position: relative; transition: all 0.3s ease; backdrop-filter: blur(5px); }
+        .event-card:hover { border-color: rgba(217, 160, 91, 0.6); background: linear-gradient(180deg, rgba(217, 160, 91, 0.1) 0%, rgba(30, 30, 42, 0.8) 100%); transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
+        .ec-cat { color: rgba(255,255,255,0.6); font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 15px; display: block; font-weight: 600; }
+        .ec-num { position: absolute; top: 30px; right: 30px; font-size: 0.85rem; color: rgba(255,255,255,0.3); letter-spacing: 2px; }
+        .ec-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #fff; margin-bottom: 15px; font-weight: 700; }
+        .ec-desc { color: rgba(255,255,255,0.65); font-size: 0.9rem; line-height: 1.7; flex-grow: 1; margin-bottom: 30px; }
+        .ec-footer { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .ec-prize { color: var(--primary-gold); font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; }
+        .ec-contact { display: flex; flex-direction: column; gap: 0.2rem; color: rgba(255,255,255,0.85); font-size: 0.95rem; }
+        .ec-contact-name { font-weight: 700; color: var(--primary-gold); }
+        .ec-contact-phone { color: rgba(255,255,255,0.7); font-size: 0.9rem; }
+        
+        .center-btn-wrapper { text-align: center; margin-top: 50px; }
+
+        /* --- FLAGSHIP / REGISTRATION SECTION --- */
+        .flagship-section { padding: 60px 4%; position: relative; z-index: 5; }
+        .fs-grid-container { border: 1px solid var(--card-border); border-radius: 6px; background-color: rgba(20, 20, 25, 0.4); backdrop-filter: blur(12px); margin-top: 40px; }
+        .fs-card { padding: 45px 35px; position: relative; display: flex; flex-direction: column; height: 100%; border-right: 1px solid var(--card-border); transition: background-color 0.3s ease; }
+        .fs-card:last-child { border-right: none; }
+        .fs-card.highlight { background: linear-gradient(180deg, rgba(139, 26, 32, 0.25) 0%, rgba(30, 30, 42, 0) 100%); }
+        .fs-card.highlight::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background-color: var(--primary-gold); }
+        .badge-flagship { position: absolute; top: 25px; right: 25px; border: 1px solid rgba(217, 160, 91, 0.5); color: var(--primary-gold); font-size: 0.55rem; letter-spacing: 2.5px; padding: 4px 10px; text-transform: uppercase; font-weight: 600; border-radius: 2px; }
+        .fs-number { font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 700; color: rgba(255, 255, 255, 0.08); line-height: 0.8; margin-bottom: 20px; }
+        .fs-card-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: #ffffff; margin-bottom: 15px; }
+        .fs-card-desc { color: rgba(255, 255, 255, 0.65); font-size: 0.9rem; line-height: 1.7; margin-bottom: 35px; flex-grow: 1; }
+        .fs-card-footer { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: auto; }
+        .fs-card-meta { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+        .fs-card-meta .fs-prize { white-space: nowrap; }
+        .fs-date { color: rgba(255, 255, 255, 0.8); font-size: 0.95rem; line-height: 1.4; }
+        .fs-card-footer button { white-space: nowrap; }
+        .fs-prize { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--primary-gold); font-weight: 700; letter-spacing: 1px; margin-bottom: 0; }
+
+        /* --- DUAL SPONSOR GALLERY & PROMO SECTION --- */
+        .sponsors-promo-section { padding: 80px 4% 120px 4%; position: relative; z-index: 5; }
+        
+        .tall-container {
+            height: 350px;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+
+        .sponsor-gallery-container {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .sponsor-gallery-container:hover, .sponsor-gallery-container:active {
+            transform: scale(1.2);
+            z-index: 20;
+        }
+
+        .sponsor-slide {
+            position: absolute; width: 100%; height: 100%; object-fit: contain;
+            opacity: 0; transition: opacity 0.8s ease-in-out; filter: grayscale(100%);
+        }
+        .sponsor-slide.active { opacity: 1; filter: grayscale(0) drop-shadow(0 20px 30px rgba(217, 160, 91, 0.4)); }
+        
+        .video-container { 
+            background: rgba(30, 30, 42, 0.6);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--card-border);
+            border-color: rgba(217, 160, 91, 0.4); transition: all 0.3s ease; 
+        }
+        .video-container:hover { border-color: var(--primary-gold); box-shadow: 0 20px 50px rgba(217, 160, 91, 0.25); }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- Footer Section Styling --- */
+        .footer-wrapper { position: relative; background-color: var(--footer-bg); margin-top: auto; z-index: 5; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+        .skyline-transition-bg { position: absolute; top: -148px; left: 0; width: 100%; height: 150px; pointer-events: none; z-index: 2; }
+        .skyline-svg { width: 100%; height: 100%; display: block; }
+        .skyline-silhouette { fill: var(--footer-bg); }
+        .footer-content { padding: 80px 6% 40px 6%; position: relative; z-index: 4; }
+        .footer-desc { color: rgba(255, 255, 255, 0.6); font-size: 0.92rem; line-height: 1.7; margin: 25px 0; max-width: 340px; }
+        .footer-heading { color: var(--primary-gold); font-size: 0.8rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 30px; }
+        .footer-links { list-style: none; padding: 0; margin: 0; }
+        .footer-links li { margin-bottom: 16px; }
+        .footer-links a { color: rgba(255, 255, 255, 0.65); text-decoration: none; font-size: 0.9rem; transition: color 0.2s ease; font-weight: 500; }
+        .footer-links a:hover { color: var(--primary-gold); }
+        .contact-info-text { color: rgba(255, 255, 255, 0.65); font-size: 0.9rem; margin-bottom: 16px; font-weight: 500; }
+        .social-container { display: flex; gap: 12px; margin-top: 15px; }
+        .social-circle { width: 38px; height: 38px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.8); text-decoration: none; font-size: 0.85rem; transition: all 0.3s ease; }
+        .social-circle:hover { border-color: var(--primary-gold); color: var(--primary-gold); background-color: rgba(217, 160, 91, 0.1); }
+        .footer-divider { height: 1px; background-color: rgba(255, 255, 255, 0.1); margin: 50px 0 30px 0; }
+        .copyright-text, .all-rights-text { color: rgba(255, 255, 255, 0.5); font-size: 0.8rem; font-weight: 500; }
+        .all-rights-text { text-align: right; }
+
+        /* --- MODAL STYLING --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-content-box { background: #121218; border: 1px solid rgba(217,160,91,0.25); border-radius: 6px; padding: 45px; max-width: 500px; width: 90%; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.8); transform: translateY(20px) scale(0.98); transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1); text-align: center; }
+        .modal-overlay.active .modal-content-box { transform: translateY(0) scale(1); }
+        .modal-close { position: absolute; top: 20px; right: 25px; background: none; border: none; color: rgba(255,255,255,0.6); font-size: 1.2rem; transition: color 0.3s; }
+        .modal-close:hover { color: var(--primary-gold); }
+        .modal-cat { color: var(--text-muted); font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; display: block; font-weight: 600; }
+        .modal-title { font-family: 'Playfair Display', serif; font-size: 2rem; color: #fff; margin-bottom: 20px; font-weight: 700; }
+        .modal-desc { color: rgba(255,255,255,0.7); font-size: 0.95rem; line-height: 1.7; margin-bottom: 30px; }
+        .modal-prize { color: var(--primary-gold); font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; margin-bottom: 40px; }
+        .modal-actions { display: flex; justify-content: center; gap: 15px; }
+
+        /* --- THEMED CHATBOT WIDGET --- */
+        .chat-widget {
+            position: fixed; bottom: 100px; right: 30px; width: 340px;
+            background: var(--bg-dark); border: 1px solid var(--primary-gold);
+            border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            z-index: 9998; overflow: hidden; transform: scale(0); transform-origin: bottom right;
+            transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.3s ease; opacity: 0;
+            display: flex; flex-direction: column;
+        }
+        .chat-widget.open { transform: scale(1); opacity: 1; }
+        
+        .chat-header {
+            background: rgba(20, 20, 25, 0.9); border-bottom: 1px solid rgba(217, 160, 91, 0.4);
+            padding: 15px 20px; display: flex; align-items: center; justify-content: space-between;
+        }
+        .chat-header h4 { margin: 0; font-family: 'Playfair Display', serif; color: var(--primary-gold); font-size: 1.2rem; font-weight: 700;}
+        .chat-close { background: none; border: none; color: rgba(255,255,255,0.6); font-size: 1.2rem; transition: 0.3s; }
+        .chat-close:hover { color: white; }
+
+        .chat-body {
+            padding: 20px 15px; height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
+            background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(20, 20, 25, 0.9) 100%);
+        }
+        
+        .chat-msg { padding: 12px 16px; border-radius: 8px; max-width: 85%; font-size: 0.85rem; line-height: 1.5; position: relative;}
+        .chat-msg.bot { background: rgba(217, 160, 91, 0.15); color: #fff; align-self: flex-start; border: 1px solid rgba(217, 160, 91, 0.3); border-bottom-left-radius: 0; }
+        .chat-msg.user { background: var(--primary-gold); color: #000; align-self: flex-end; border-bottom-right-radius: 0; font-weight: 500;}
+        
+        .chat-options { padding: 15px; border-top: 1px solid rgba(217, 160, 91, 0.4); background: rgba(20, 20, 25, 0.9); display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;}
+        .chat-opt-btn { background: transparent; border: 1px solid var(--primary-gold); color: var(--primary-gold); padding: 6px 12px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; transition: 0.3s; }
+        .chat-opt-btn:hover { background: var(--primary-gold); color: #000; }
+        
+        .chat-whatsapp-btn { background: #25d366; color: #fff; border: none; padding: 10px 15px; border-radius: 5px; width: 100%; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; margin-top: 10px; font-size: 0.85rem; transition: 0.3s;}
+        .chat-whatsapp-btn:hover { background: #1ebe57; color: white; }
+        .chat-msg a { color: var(--primary-gold); text-decoration: underline; }
+        .chat-input-area { padding: 12px 15px; border-top: 1px solid rgba(217, 160, 91, 0.4); background: rgba(20, 20, 25, 0.95); display: flex; gap: 8px; }
+        .chat-input { flex: 1; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(217, 160, 91, 0.25); border-radius: 20px; padding: 8px 12px; color: #fff; font-size: 0.8rem; outline: none; }
+        .chat-input::placeholder { color: rgba(255,255,255,0.5); }
+        .chat-send-btn { background: var(--primary-gold); border: none; color: #000; border-radius: 20px; padding: 8px 12px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+
+        .whatsapp-fab {
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background-color: rgba(20, 20, 25, 0.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--primary-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            z-index: 9999; cursor: pointer; overflow: visible;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); transition: all 0.3s ease;
+        }
+        .whatsapp-fab img { width: 32px; height: 32px; object-fit: contain; }
+        .whatsapp-fab::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 1px solid var(--primary-gold); border-radius: inherit; z-index: -1; opacity: 0; }
+        .whatsapp-fab:hover { background-color: var(--primary-gold); transform: translateY(-5px); }
+        .whatsapp-fab:hover::before { animation: pulseOutline 1s cubic-bezier(0.165, 0.84, 0.44, 1) infinite; }
+        
+        .whatsapp-fab::after {
+            content: 'Ask about event'; position: absolute; right: 75px; background-color: rgba(20, 20, 25, 0.95);
+            color: var(--primary-gold); padding: 8px 14px; border-radius: 4px; font-size: 0.75rem; font-weight: 600;
+            letter-spacing: 1px; border: 1px solid rgba(217, 160, 91, 0.4); white-space: nowrap;
+            opacity: 0; visibility: hidden; pointer-events: none;
+            animation: notifyOnce 2s 1s forwards; 
+        }
+
+        @keyframes notifyOnce {
+            0% { opacity: 0; visibility: hidden; right: 60px; }
+            15% { opacity: 1; visibility: visible; right: 80px; }
+            85% { opacity: 1; visibility: visible; right: 80px; }
+            100% { opacity: 0; visibility: hidden; right: 60px; }
+        }
+
+        @media (max-width: 991px) {
+            .fs-card { border-right: none; border-bottom: 1px solid var(--card-border); }
+            .fs-card:last-child { border-bottom: none; }
+            .about-title { margin-bottom: 20px; }
+            .stats-grid { margin-top: 40px; }
+            .tall-container { height: 350px; } 
+
+            /* --- MOBILE NAVBAR FIX --- */
+            .navbar > .container-fluid { position: relative; }
+            .navbar-collapse {
+                position: absolute;
+                top: 100%;
+                right: 4%;
+                width: auto;
+                min-width: 180px;
+                background: rgba(10, 10, 15, 0.65); /* Translucent */
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                padding: 15px 20px;
+                border-radius: 8px;
+                margin-top: 10px;
+                border: 1px solid rgba(217, 160, 91, 0.2); /* Subtle Gold Border */
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+                z-index: 1050;
+            }
+            .navbar-nav .nav-item { margin: 8px 0; text-align: right; } /* Right Aligned */
+            .nav-link { margin: 0; padding: 4px 0; display: block; }
+        }
+        @media (max-width: 768px) {
+            .all-rights-text { text-align: left; margin-top: 8px; }
+            .footer-content { padding: 60px 4% 30px 4%; }
+            .section-title { font-size: 3rem; }
+            .quote-container { padding-left: 20px; }
+            .chat-widget { bottom: 90px; right: 15px; width: calc(100% - 30px); }
+            .whatsapp-fab::after { display: none; }
+            .music-fab { bottom: 30px; left: 15px; width: 45px; height: 45px; font-size: 1rem; }
+
+            .countdown-wrapper { flex-direction: column; gap: 15px; }
+            .countdown-timer { gap: 10px; }
+            .time-block { min-width: 45px; }
+            .time-block .number { font-size: 1.8rem; }
+            .time-block .label { font-size: 0.5rem; letter-spacing: 2px; }
+            .separator { font-size: 1.5rem; margin-top: -15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <video id="loadingVideo" autoplay muted playsinline>
+            <source src="Loding page.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <audio id="bgMusic" loop preload="auto">
+        <source src="Page audio.mpeg" type="audio/mpeg">
+    </audio>
+
+    <button id="musicToggleBtn" class="music-fab" title="Toggle Music">
+        <i class="fas fa-volume-high"></i>
+    </button>
+
+    <div class="ambient-glow-container">
+        <div class="ambient-light-orb orb-crimson"></div>
+        <div class="ambient-light-orb orb-purple"></div>
+        <div class="ambient-light-orb orb-gold"></div>
+    </div>
+    <div id="starfield"></div>
+
+    <header>
+        <div class="top-banner">
+            <div class="marquee-container">
+                <div class="marquee-content">
+                    <span class="banner-item">Accommodation Registration opens now &mdash; 12 July 2026 <a href="https://docs.google.com/forms/d/e/1FAIpQLSeMruNUYtjDF2P1o8AbRKys7WW9wTLHG3Hyyjw8UIHM_rsRiw/viewform" class="btn-register-small">REGISTER &rarr;</a></span>
+                    <span class="banner-item">Ambassador Program Applications Open! <a href="https://docs.google.com/forms/u/1/d/e/1FAIpQLSereoK-mRIyxorxfecQKm5si1U6loz2HSva6-atoiNI3tXWfQ/viewform?usp=send_form" class="btn-register-small">APPLY &rarr;</a></span>
+                </div>
+                <div class="marquee-content">
+                    <span class="banner-item">Accommodation Registration opens now &mdash; 12 July 2026 <a href="https://docs.google.com/forms/d/e/1FAIpQLSeMruNUYtjDF2P1o8AbRKys7WW9wTLHG3Hyyjw8UIHM_rsRiw/viewform" class="btn-register-small">REGISTER &rarr;</a></span>
+                    <span class="banner-item">Ambassador Program Applications Open! <a href="https://docs.google.com/forms/u/1/d/e/1FAIpQLSereoK-mRIyxorxfecQKm5si1U6loz2HSva6-atoiNI3tXWfQ/viewform?usp=send_form" class="btn-register-small">APPLY &rarr;</a></span>
+                </div>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand text-decoration-none" href="#">
+                    <img src="Navigation.png" alt="AV Logo" class="nav-logo-img">
+                    <div>
+                        <div class="logo-text">AVANZARE V 19.0</div>
+                        <div class="logo-subtext">17-18 JULY 2026</div>
+                    </div>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <i class="fas fa-bars text-white"></i>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#events">Events</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#registration">Registration</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#sponsors">Sponsors</a></li>
+                        <li class="nav-item"><a class="nav-link nav-contact-trigger" href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="d-none d-lg-block ms-4">
+                    <a href="#events" class="btn btn-gold">Register</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="hero-section container-fluid">
+        <canvas id="fireworksCanvas" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none;"></canvas>
+
+        <div class="row w-100 align-items-center" style="z-index: 5;">
+            <div class="col-lg-6 col-md-12 ps-lg-5 mb-5 mb-lg-0">
+                <div class="hero-subtitle">IEEE Student Branch of KEC</div>
+                <h1 class="title-hogwarts">AVANZARE</h1>
+                <h1 class="title-techfest">V 19.0</h1>
+                <div class="title-xxvi">17 & 18 JULY 2026</div>
+                <div class="hero-divider"></div>
+                <p class="hero-description">Two days. Five events. Two Hackathons. Five Hundred Students.<br>One unforgettable convergence of Technology and Learning.</p>
+                <div class="btn-group-custom mt-4">
+                    <a href="#events" class="btn btn-gold px-4 py-3">Explore Events</a>
+                    <a href="#about" class="btn btn-outline-dark px-4 py-3">Learn More</a>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 d-flex flex-column align-items-center justify-content-center mt-4 mt-lg-0">
+                <div class="glow-system">
+                    <img src="Display.png" class="core-image" alt="Hogwarts Centerpiece Image">
+                </div>
+                <div class="countdown-wrapper">
+                    <div class="begins-in">BEGINS IN</div>
+                    <div class="countdown-timer">
+                        <div class="time-block"><span class="number" id="cd-days">267</span><span class="label">DAYS</span></div><span class="separator">:</span>
+                        <div class="time-block"><span class="number" id="cd-hours">10</span><span class="label">HOURS</span></div><span class="separator">:</span>
+                        <div class="time-block"><span class="number" id="cd-mins">30</span><span class="label">MIN</span></div><span class="separator">:</span>
+                        <div class="time-block"><span class="number" id="cd-secs">57</span><span class="label">SEC</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section id="about" class="about-section container-fluid">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0 pe-lg-5">
+                <div class="about-subtitle">ABOUT THE FESTIVAL</div>
+                <h2 class="about-title">Where Early 2K's Legacy Meets Modern Ingenuity</h2>
+                <p class="about-desc">Avanzare is the premier techno-Cultural festival of the IEEE Student Branch of Kongu Engineering College — a four-day convergence of innovation, competition, and enchantment held at the legendary campus of Kongu Engineering College.</p>
+                <p class="about-desc">Since its founding in 2003, the festival has grown into one of the most prestigious collegiate competitions, drawing the sharpest minds of 500+ Students across Tamil Nadu.</p>
+            </div>
+            <div class="col-lg-6 ps-lg-4">
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-number">48+</div><div class="stat-label">HOURS</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">5</div><div class="stat-label">EVENTS</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">500+</div><div class="stat-label">STUDENTS</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">2</div><div class="stat-label">HACKATHON</div>
+                    </div>
+                    <div class="stat-box full-width">
+                        <div class="stat-number">₹50,000</div><div class="stat-label">TOTAL PRIZE POOL</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="quote-section container-fluid">
+        <div class="quote-container">
+            <div class="quote-text">"It is not our abilities that show what we truly are — it is our choices. Choose to build. Choose to innovate. Choose to be extraordinary."</div>
+            <div class="quote-author">&mdash; TEAM AVANZARE, IEEE KEC</div>
+        </div>
+    </section>
+
+    <section id="events" class="events-section container-fluid">
+        <div class="row align-items-end mb-2">
+            <div class="col-lg-6">
+                <div class="section-subtitle">Competitions</div>
+                <h2 class="section-title">Events</h2>
+            </div>
+            <div class="col-lg-6 d-flex justify-content-lg-end mt-3 mt-lg-0">
+                <p class="section-desc">Seven clusters of competition spanning every discipline of the modern wizard.</p>
+            </div>
+        </div>
+
+        <div class="filter-nav">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="Presentations">Presentations</button>
+            <button class="filter-btn" data-filter="Challenges">Challenges</button>
+            <button class="filter-btn" data-filter="Puzzles">Puzzles</button>
+            <button class="filter-btn" data-filter="Hackathons">Hackathons</button>
+        </div>
+
+        <div class="row g-4" id="events-grid">
+             <div class="col-xl-4 col-md-6 event-item" data-category="Presentations">
+                <div class="event-card">
+                    <span class="ec-cat">Paper Presentation</span><span class="ec-num">01</span>
+                    <h3 class="ec-title">Paper Presentation</h3>
+                    <p class="ec-desc">A premier platform for undergraduate students to present original research, technical insights, and conceptual frameworks in engineering, ideally aligned with UN Sustainable Development Goals.</p>
+                    <div class="ec-footer"><div class="ec-contact"><span class="ec-contact-name">KULANDAISAMY R</span><span class="ec-contact-phone">+91 81488 47029</span></div><a href="https://sponsortariff.my.canva.site/main-brochure" target="_blank" rel="noopener noreferrer" class="btn-outline-custom">Register</a></div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6 event-item" data-category="Challenges">
+                <div class="event-card">
+                    <span class="ec-cat">Webathon</span><span class="ec-num">02</span>
+                    <h3 class="ec-title">Webathon</h3>
+                    <p class="ec-desc">A multi-stage competition testing digital creativity and coding prowess. It includes a web knowledge challenge, an image identification round, and a grand finale where participants build a website from scratch on a spot theme.</p>
+                    <div class="ec-footer"><div class="ec-contact"><span class="ec-contact-name">PARAMESHWARAN A</span><span class="ec-contact-phone">+91 9629391765</span></div><a href="https://sponsortariff.my.canva.site/main-brochure" target="_blank" rel="noopener noreferrer" class="btn-outline-custom">Register</a></div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6 event-item" data-category="Challenges">
+                <div class="event-card">
+                    <span class="ec-cat">Silicon Sprint</span><span class="ec-num">03</span>
+                    <h3 class="ec-title">Silicon Sprint</h3>
+                    <p class="ec-desc">An exclusive competition for the VLSI domain consisting of an online quiz, a live programming contest for circuits, and a high-pressure oral rapid-fire finale.</p>
+                    <div class="ec-footer"><div class="ec-contact"><span class="ec-contact-name">HEMAVARSHINI S</span><span class="ec-contact-phone">+91 8807761776</span></div><a href="https://sponsortariff.my.canva.site/main-brochure" target="_blank" rel="noopener noreferrer" class="btn-outline-custom">Register</a></div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6 event-item" data-category="Puzzles">
+                <div class="event-card">
+                    <span class="ec-cat">Master Minds</span><span class="ec-num">04</span>
+                    <h3 class="ec-title">Master Minds</h3>
+                    <p class="ec-desc">An individual competition that evaluates analytical and logical skills through an Aptitude Challenge followed by a Tech Master Challenge focusing on technical problem-solving and programming fundamentals.</p>
+                    <div class="ec-footer"><div class="ec-contact"><span class="ec-contact-name">DHANARAJ R</span><span class="ec-contact-phone">+91 6384165166</span></div><a href="https://sponsortariff.my.canva.site/main-brochure" target="_blank" rel="noopener noreferrer" class="btn-outline-custom">Register</a></div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6 event-item" data-category="Presentations">
+                <div class="event-card">
+                    <span class="ec-cat">Project Presentation</span><span class="ec-num">05</span>
+                    <h3 class="ec-title">Project Presentation</h3>
+                    <p class="ec-desc">An event where students showcase their innovative software or hardware solutions, demonstrating functional applications and explaining their underlying architecture and scalability.</p>
+                    <div class="ec-footer"><div class="ec-contact"><span class="ec-contact-name">PRADEEP S</span><span class="ec-contact-phone">+91 7806980094</span></div><a href="https://sponsortariff.my.canva.site/main-brochure" target="_blank" rel="noopener noreferrer" class="btn-outline-custom">Register</a></div>
+                </div>
+            </div>
+             <div class="col-xl-4 col-md-6 event-item" data-category="Hackathons">
+                <div class="event-card">
+                    <span class="ec-cat">Software Hackathon</span><span class="ec-num">07</span>
+                    <h3 class="ec-title">Ravenclaw's Cyber Hackathon</h3>
+                    <p class="ec-desc">A 24-hour challenge where teams of 2–4 members innovate, code, and build impactful software solutions to solve real-world problems.</p>
+                    <div class="ec-footer"><div class="ec-contact"><span class="ec-contact-name">JAYANIVASH P</span><span class="ec-contact-phone">+91 9442249452</span></div><a href="https://sponsortariff.my.canva.site/main-brochure" target="_blank" rel="noopener noreferrer" class="btn-outline-custom">Register</a></div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6 event-item" data-category="Hackathons">
+                <div class="event-card">
+                    <span class="ec-cat">Hardware Hackathon</span><span class="ec-num">08</span>
+                    <h3 class="ec-title">Ravenclaw's Techno Hackathon</h3>
+                    <p class="ec-desc"> A 24-hour competition focused on designing, developing, and demonstrating a functional hardware prototype based on provided problem statements.</p>
+                    <div class="ec-footer"><div class="ec-contact"><span class="ec-contact-name">VISHAL G </span><span class="ec-contact-phone">+91 8778255251</span></div><a href="https://sponsortariff.my.canva.site/main-brochure" target="_blank" rel="noopener noreferrer" class="btn-outline-custom">Register</a></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="registration" class="flagship-section container-fluid">
+        <div class="row align-items-end mb-4">
+            <div class="col-lg-6">
+                <div class="section-subtitle">Legendary</div>
+                <h2 class="section-title">Registration</h2>
+            </div>
+            <div class="col-lg-6 d-flex justify-content-lg-end">
+                <p class="section-desc">The three pinnacle Packages that define the Fest. Each penny is an investment for the Future</p>
+            </div>
+        </div>
+
+        <div class="fs-grid-container">
+            <div class="row g-0">
+                <div class="col-lg-4">
+                    <div class="fs-card">
+                        <div class="fs-number">01</div>
+                        <h3 class="fs-card-title">Tech Fest</h3>
+                        <p class="fs-card-desc">This pass is for the Tech Fest portion of the symposium. It allows a participant to choose and compete in any three out of the five available technical event categories under a single registration. These events include Paper Presentation, Project Presentation, Webathon, Mind Masters, and Silicon Sprint.</p>
+                        <div class="fs-card-footer">
+                            <div class="fs-card-meta">
+                                <div class="fs-prize">₹219 Per Head</div>
+                                <div class="fs-date">Last Date: 15th Jul 2026</div>
+                            </div>
+                            <a href="https://unstop.com/p/avanzare-v190-national-level-tech-fest-kongu-engineering-college-kec-erode-1695426?utm_medium=Share&utm_source=ieeekecu62817&utm_campaign=Competitions" target="_blank" rel="noopener noreferrer" class="btn-outline-custom">PARTICIPATE</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="fs-card highlight">
+                        <span class="badge-flagship">FLAGSHIP</span>
+                        <div class="fs-number">02</div>
+                        <h3 class="fs-card-title">Software Hackathon</h3>
+                        <p class="fs-card-desc">Focused purely on the digital space, teams use code to build apps, websites, or AI models from scratch. It’s a fast-paced environment centered around rapid programming, cloud APIs, and user interface design.</p>
+                        <div class="fs-card-footer">
+                            <div class="fs-card-meta">
+                                <div class="fs-prize">₹420 Per Head</div>
+                                <div class="fs-date">Last Date: 15th Jul 2026</div>
+                            </div>
+                            <a href="https://unstop.com/hackathons/avanzare-v190-24-hour-national-level-hackathon-kongu-engineering-college-1690425?lb=Hppko0Iy&utm_medium=Share&utm_source=ieeekecu62817&utm_campaign=Online_coding_challenge" target="_blank" rel="noopener noreferrer" class="btn-gold" style="padding: 10px 18px; font-size: 0.65rem;">PARTICIPATE</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="fs-card">
+                        <span class="badge-flagship">NEW</span>
+                        <div class="fs-number">03</div>
+                        <h3 class="fs-card-title">Hardware Hackathon</h3>
+                        <p class="fs-card-desc">This tier is specifically for exhibitors and startups participating in Stall Mania. It grants access to one of the six available stalls to present products or innovations directly to the event's audience.</p>
+                        <div class="fs-card-footer">
+                            <div class="fs-card-meta">
+                                <div class="fs-prize">₹420 Per Head</div>
+                                <div class="fs-date">Last Date: 15th Jul 2026</div>
+                            </div>
+                            <a href="https://unstop.com/hackathons/avanzare-v190-24-hour-national-level-hackathon-kongu-engineering-college-1690425?lb=Hppko0Iy&utm_medium=Share&utm_source=ieeekecu62817&utm_campaign=Online_coding_challenge" target="_blank" rel="noopener noreferrer" class="btn-outline-custom">PARTICIPATE</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sponsors" class="sponsors-promo-section container-fluid">
+        <div class="row g-4 align-items-center">
+            
+            <div class="col-lg-6">
+                <div class="section-subtitle text-start" style="color: var(--primary-gold);">PATRONS</div>
+                <h2 class="section-title text-start mb-4">Our Sponsors</h2>
+                <p class="section-desc text-start mb-5">Proudly supported by the finest institutions driving innovation forward.</p>
+                
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="tall-container sponsor-gallery-container" id="gallery1">
+                            <img src="DESIGN PARTNER.png" class="sponsor-slide active" alt="Sponsor 1">
+                            <img src="GOLDEN SPONSOR.png" class="sponsor-slide" alt="Sponsor 2">
+                            <img src="INDUSTRY PARTNER.png" class="sponsor-slide" alt="Sponsor 3">
+                            <img src="MEDIA PARTNER.png" class="sponsor-slide" alt="Sponsor 4">
+                            <img src="PAMPLET PARTNER.png" class="sponsor-slide" alt="Sponsor 5">
+                            <img src="PLATFORM PARTNER.png" class="sponsor-slide" alt="Sponsor 6">
+                            <img src="REGISTRATION PARTNER.png" class="sponsor-slide" alt="Sponsor 7">
+                            <img src="TECHNICALPARTNER.png" class="sponsor-slide" alt="Sponsor 8">
+                            <img src="PLATINUM  SPONSOR.png" class="sponsor-slide" alt="Sponsor 9">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="tall-container sponsor-gallery-container" id="gallery2">
+                            <img src="PLATINUM  SPONSOR.png" class="sponsor-slide active" alt="Sponsor 9">
+                            <img src="TECHNICALPARTNER.png" class="sponsor-slide" alt="Sponsor 8">
+                            <img src="REGISTRATION PARTNER.png" class="sponsor-slide" alt="Sponsor 7">
+                            <img src="PLATFORM PARTNER.png" class="sponsor-slide" alt="Sponsor 6">
+                            <img src="PAMPLET PARTNER.png" class="sponsor-slide" alt="Sponsor 5">
+                            <img src="MEDIA PARTNER.png" class="sponsor-slide" alt="Sponsor 4">
+                            <img src="INDUSTRY PARTNER.png" class="sponsor-slide" alt="Sponsor 3">
+                            <img src="GOLDEN SPONSOR.png" class="sponsor-slide" alt="Sponsor 2">
+                            <img src="DESIGN PARTNER.png" class="sponsor-slide" alt="Sponsor 1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6 mt-5 mt-lg-0">
+                <div class="section-subtitle text-start" style="color: var(--primary-gold);">TEASER</div>
+                <h2 class="section-title text-start mb-4" style="font-size: clamp(2rem, 4vw, 3rem);">Promo Video</h2>
+                <p class="section-desc text-start mb-5">Catch a glimpse of what awaits you at Avanzare V19.0</p>
+                
+                <div class="tall-container video-container">
+                    <iframe class="video-iframe" src="https://youtu.be/YDjEsJq6yck" title="Promo Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer id="contact" class="footer-wrapper">
+        <div class="skyline-transition-bg">
+            <svg class="skyline-svg" viewBox="0 0 1440 150" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                <path class="skyline-silhouette" d="M0,150 L1440,150 L1440,90 C1380,82 1330,65 1250,60 C1140,52 1080,78 980,80 C900,81 830,68 760,70 C710,71 670,82 660,85 L660,110 L645,110 L645,115 L660,115 L660,125 L640,125 L640,115 L630,115 L630,125 L610,125 L610,115 L600,115 L600,125 L580,125 L580,115 L570,115 L570,125 L550,125 L550,115 L540,115 L540,125 L520,125 L520,115 L505,115 L505,110 L500,110 L500,102 C495,100 488,96 480,96 L420,96 L420,102 L410,102 C402,102 395,98 390,95 L345,95 L345,102 L335,102 C328,102 322,98 318,95 L280,95 L280,110 L270,110 C240,85 180,50 120,65 C60,80 35,55 0,72 Z"/>
+            </svg>
+        </div>
+
+        <div class="container-fluid footer-content">
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 mb-5 mb-lg-0">
+                    <div class="d-flex align-items-center">
+                        <img src="Footer.png" alt="AV Logo" class="nav-logo-img">
+                        <div>
+                            <div class="logo-text">AVANZARE V 19.0</div>
+                            <div class="logo-subtext">03 & 04 JULY 2026</div>
+                        </div>
+                    </div>
+                    <p class="footer-desc">The official techno-Cultural festival of IEEE SB Kongu Engineering College.</p>
+                    <div class="social-container">
+                        <a href="https://www.linkedin.com/in/ieee-kec-95a257375/" class="social-circle"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="https://youtube.com/@ieee_kec?si=bSofqBXgDxd6-0Gv" class="social-circle"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://www.instagram.com/ieee.kec/" class="social-circle"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-6 mb-4 mb-sm-0">
+                    <h5 class="footer-heading">Navigate</h5>
+                    <ul class="footer-links">
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#events">Events</a></li>
+                        <li><a href="#registration">Registration</a></li>
+                        <li><a href="#sponsors">Sponsors</a></li>
+                        <li><a href="#" class="nav-contact-trigger">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-6 mb-4 mb-sm-0">
+                    <h5 class="footer-heading">Important Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="https://unstop.com/p/avanzare-v190-national-level-tech-fest-kongu-engineering-college-kec-erode-1695426?utm_medium=Share&utm_source=ieeekecu62817&utm_campaign=Competitions">Tech Fest</a></li>
+                        <li><a href="https://unstop.com/hackathons/avanzare-v190-24-hour-national-level-hackathon-kongu-engineering-college-1690425?lb=Hppko0Iy&utm_medium=Share&utm_source=ieeekecu62817&utm_campaign=Online_coding_challenge">Hackathon</a></li>
+                        <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSeMruNUYtjDF2P1o8AbRKys7WW9wTLHG3Hyyjw8UIHM_rsRiw/viewform">Accommodation</a></li>
+                        <li><a id="ambassador" href="https://docs.google.com/forms/u/1/d/e/1FAIpQLSereoK-mRIyxorxfecQKm5si1U6loz2HSva6-atoiNI3tXWfQ/viewform?usp=send_form">Ambassadors</a></li>
+                        <li><a href="https://sponsortariff.my.canva.site/">Sponsor Tariff</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-4 col-12">
+                    <h5 class="footer-heading">Contact</h5>
+                    <div class="contact-info-text">ieeekec24@gmail.com</div>
+                    <div class="contact-info-text">+91 63699 78859</div>
+                    <div class="contact-info-text">Kongu Engineering College, Perundurai</div>
+                </div>
+            </div>
+
+            <div class="footer-divider"></div>
+
+            <div class="row align-items-center">
+                <div class="col-md-6 col-12"><div class="copyright-text">&copy; 2026 Avanzare V 19.0. Crafted by the Team Strikers.</div></div>
+                <div class="col-md-6 col-12"><div class="all-rights-text">All rights reserved.</div></div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="registrationModal">
+        <div class="modal-content-box">
+            <button class="modal-close" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
+            <span class="modal-cat" id="modalCat">Category</span>
+            <h2 class="modal-title" id="modalTitle">Event Title</h2>
+            <p class="modal-desc" id="modalDesc">Event description goes here.</p>
+            <div class="modal-prize" id="modalPrize">₹0</div>
+            
+            <div class="modal-actions">
+                <button class="btn-outline-custom" id="closeModalActionBtn">CLOSE</button>
+                <a href="https://sponsortariff.my.canva.site/main-brochure" target="_blank" rel="noopener noreferrer" class="btn-gold">REGISTER</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-widget" id="waWidget">
+        <div class="chat-header">
+            <div>
+                <h4>Avanzare Assistant</h4>
+            </div>
+            <button class="chat-close" id="closeWaWidget"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="chat-msg bot">
+                Hi there! 👋 I can help with dates, events, registration, accommodation, venue, sponsors, contact info, and prize details. Type a keyword or use the quick options below.
+            </div>
+        </div>
+        <div class="chat-options">
+            <button class="chat-opt-btn" data-key="date">Dates?</button>
+            <button class="chat-opt-btn" data-key="events">Events?</button>
+            <button class="chat-opt-btn" data-key="register">Register?</button>
+            <button class="chat-opt-btn" data-key="accomodation">Accommodation?</button>
+            <button class="chat-opt-btn" data-key="venue">Venue?</button>
+            <button class="chat-opt-btn" data-key="contact">Contact?</button>
+            <button class="chat-opt-btn" data-key="prize">Prize Pool?</button>
+            <button class="chat-opt-btn" data-key="sponsors">Sponsors?</button>
+            <a href="https://wa.me/916369978859?text=Hello%20Avanzare%20Team!%20I%20have%20a%20query%20regarding%20registration." target="_blank" rel="noopener noreferrer" class="chat-whatsapp-btn">
+                <i class="fa-brands fa-whatsapp"></i> Contact Team
+            </a>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Type your question here..." />
+            <button id="sendChatBtn" class="chat-send-btn">Send</button>
+        </div>
+    </div>
+
+    <button class="whatsapp-fab" id="waFabBtn">
+        <img src="BOT.png" alt="Bot" style="width: 100px; height: 100px; object-fit: contain;">
+    </button>
+
+    <script>
+        // --- PRELOADER & MUSIC LOGIC ---
+        document.addEventListener("DOMContentLoaded", function() {
+                const loadingVideo = document.getElementById('loadingVideo');
+                const preloader = document.getElementById('preloader');
+                const bgMusic = document.getElementById('bgMusic');
+                const musicToggleBtn = document.getElementById('musicToggleBtn');
+                const musicIcon = musicToggleBtn.querySelector('i');
+
+                // Persisted user preference for music mute (string 'true' or 'false')
+                const storedMuted = localStorage.getItem('av_music_muted');
+                const isMuted = storedMuted === 'true';
+                // Initialize icon based on stored preference
+                if (isMuted) {
+                    musicIcon.classList.remove('fa-volume-high');
+                    musicIcon.classList.add('fa-volume-xmark');
+                    musicToggleBtn.title = 'Unmute music';
+                    try { bgMusic.pause(); } catch (e) {}
+                } else {
+                    musicIcon.classList.remove('fa-volume-xmark');
+                    musicIcon.classList.add('fa-volume-high');
+                    musicToggleBtn.title = 'Mute music';
+                }
+
+            
+
+            // Function to hide the preloader and START the fireworks
+            function hidePreloader() {
+                if (preloader.style.display !== 'none' && !preloader.classList.contains('pop-out')) {
+                    preloader.classList.add('pop-out');
+                    setTimeout(() => { 
+                        preloader.style.display = 'none'; 
+                        startFireworks(); // TRIGGER FIREWORKS HERE
+                    }, 800);
+                }
+            }
+
+            function syncIntroAudio() {
+                if (isMuted) return;
+                try {
+                    bgMusic.currentTime = loadingVideo.currentTime;
+                    bgMusic.volume = 1;
+                    bgMusic.play().then(() => {
+                        musicIcon.classList.remove('fa-volume-xmark');
+                        musicIcon.classList.add('fa-volume-high');
+                        musicToggleBtn.title = 'Mute music';
+                    }).catch(err => { console.log('Intro audio play blocked:', err); });
+                } catch (e) { console.log('Intro audio sync error:', e); }
+            }
+
+            function handleIntroTap() {
+                if (preloader.classList.contains('pop-out')) return;
+                hidePreloader();
+            }
+
+            // Hide automatically when video finishes
+            loadingVideo.addEventListener('ended', hidePreloader);
+            loadingVideo.addEventListener('click', handleIntroTap);
+            loadingVideo.addEventListener('touchend', handleIntroTap);
+            preloader.addEventListener('click', handleIntroTap);
+            preloader.addEventListener('touchend', handleIntroTap);
+            // Try to start audio when the loading video begins playing (best-effort; may be blocked by browser)
+            loadingVideo.addEventListener('play', syncIntroAudio);
+            
+            // Failsafe in case the video doesn't play or is stuck
+            setTimeout(hidePreloader, 35000); 
+
+            // Attempt autoplay on DOMContentLoaded (best-effort; will likely be blocked on many browsers)
+            try {
+                bgMusic.preload = 'auto';
+                bgMusic.currentTime = 0;
+                bgMusic.volume = 1;
+                if (!isMuted) {
+                    bgMusic.play().then(() => {
+                        musicIcon.classList.remove('fa-volume-xmark');
+                        musicIcon.classList.add('fa-volume-high');
+                        musicToggleBtn.title = 'Mute music';
+                    }).catch(err => { console.log('Autoplay attempt on DOMContentLoaded blocked:', err); });
+                }
+            } catch (e) { console.log('Autoplay init error:', e); }
+
+            // MUSIC LOGIC: Triggers on the user's very first click anywhere on the page
+            let firstInteraction = false;
+            document.addEventListener('click', function() {
+                if (!firstInteraction) {
+                    firstInteraction = true;
+                    try {
+                        if (!isMuted) {
+                            bgMusic.currentTime = 0; // ensure audio starts from beginning
+                            bgMusic.volume = 1; // Set volume to 100%
+                            bgMusic.play().then(() => {
+                                musicIcon.classList.remove('fa-volume-xmark');
+                                musicIcon.classList.add('fa-volume-high');
+                            }).catch(err => { console.log("Audio play blocked by browser:", err); });
+                        }
+                    } catch (e) { console.log('First-interaction audio start error:', e); }
+                }
+            });
+
+            // Floating Music Toggle Button Logic
+            musicToggleBtn.addEventListener('click', function(e) {
+                if (bgMusic.paused) {
+                    bgMusic.play().then(() => {
+                        musicIcon.classList.remove('fa-volume-xmark');
+                        musicIcon.classList.add('fa-volume-high');
+                        musicToggleBtn.title = 'Mute music';
+                        localStorage.setItem('av_music_muted', 'false');
+                    }).catch(err => console.log('Play blocked on toggle:', err));
+                } else {
+                    bgMusic.pause();
+                    musicIcon.classList.remove('fa-volume-high');
+                    musicIcon.classList.add('fa-volume-xmark');
+                    musicToggleBtn.title = 'Unmute music';
+                    localStorage.setItem('av_music_muted', 'true');
+                }
+            });
+            
+            // --- MOBILE NAVBAR AUTO-CLOSE FIX ---
+            const navCollapse = document.getElementById('navbarNav');
+            const navLinks = document.querySelectorAll('#navbarNav .nav-link');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    // Check if menu is currently open
+                    if (navCollapse.classList.contains('show')) {
+                        // Use Bootstrap's native API to close it
+                        const bsCollapse = bootstrap.Collapse.getOrCreateInstance(navCollapse);
+                        bsCollapse.hide();
+                    }
+                });
+            });
+        });
+
+        // --- Custom Canvas Fireworks Logic ---
+        const fwCanvas = document.getElementById('fireworksCanvas');
+        const fwCtx = fwCanvas.getContext('2d');
+        let fwRockets = [];
+        let fwParticles = [];
+        let fireworksRunning = false;
+
+        function resizeFwCanvas() {
+            fwCanvas.width = fwCanvas.parentElement.clientWidth;
+            fwCanvas.height = fwCanvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeFwCanvas);
+        resizeFwCanvas();
+
+        class Rocket {
+            constructor(x, y, targetY, color) {
+                this.x = x; this.y = y; this.targetY = targetY; this.color = color;
+                this.speed = 8;
+                this.angle = Math.atan2(targetY - y, 0);
+                this.vx = 0; this.vy = -this.speed;
+                this.history = [];
+            }
+            update() {
+                this.history.push({x: this.x, y: this.y});
+                if (this.history.length > 5) this.history.shift();
+                this.y += this.vy;
+            }
+            draw() {
+                fwCtx.beginPath();
+                if (this.history.length > 0) {
+                    fwCtx.moveTo(this.history[0].x, this.history[0].y);
+                    fwCtx.lineTo(this.x, this.y);
+                } else {
+                    fwCtx.moveTo(this.x, this.y);
+                    fwCtx.lineTo(this.x, this.y - 5);
+                }
+                fwCtx.strokeStyle = '#fff';
+                fwCtx.lineWidth = 3;
+                fwCtx.stroke();
+            }
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x; this.y = y; this.color = color;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 8 + 2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.gravity = 0.08;
+                this.friction = 0.95;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.015 + 0.015;
+                this.history = [];
+            }
+            update() {
+                this.history.push({x: this.x, y: this.y});
+                if (this.history.length > 5) this.history.shift();
+                this.vx *= this.friction;
+                this.vy *= this.friction;
+                this.vy += this.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+            }
+            draw() {
+                fwCtx.globalAlpha = this.alpha;
+                fwCtx.beginPath();
+                if (this.history.length > 0) {
+                    fwCtx.moveTo(this.history[0].x, this.history[0].y);
+                    fwCtx.lineTo(this.x, this.y);
+                } else {
+                    fwCtx.moveTo(this.x, this.y);
+                    fwCtx.lineTo(this.x + this.vx, this.y + this.vy);
+                }
+                fwCtx.strokeStyle = this.color;
+                fwCtx.lineWidth = 3;
+                fwCtx.lineCap = 'round';
+                fwCtx.stroke();
+                fwCtx.globalAlpha = 1;
+            }
+        }
+
+        function explode(x, y) {
+            const colors = ['#d9a05b', '#ffffff', '#8b1a20', '#ffc107']; 
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            for (let i = 0; i < 80; i++) {
+                fwParticles.push(new Particle(x, y, color));
+            }
+        }
+
+        function launchFirework(x, startY, targetY) {
+            fwRockets.push(new Rocket(x, startY, targetY, '#fff'));
+        }
+
+        function animateFireworks() {
+            requestAnimationFrame(animateFireworks);
+            
+            // Replaced solid fill trick with destination-out trick to prevent background blackout
+            fwCtx.globalCompositeOperation = 'destination-out';
+            fwCtx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            fwCtx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
+            fwCtx.globalCompositeOperation = 'source-over';
+            
+            for (let i = fwRockets.length - 1; i >= 0; i--) {
+                let r = fwRockets[i];
+                r.update();
+                r.draw();
+                if (r.y <= r.targetY) {
+                    explode(r.x, r.y);
+                    fwRockets.splice(i, 1);
+                }
+            }
+            
+            for (let i = fwParticles.length - 1; i >= 0; i--) {
+                let p = fwParticles[i];
+                p.update();
+                p.draw();
+                if (p.alpha <= 0) fwParticles.splice(i, 1);
+            }
+        }
+
+        // Wrapper to trigger fireworks only after Preloader leaves
+        function startFireworks() {
+            if (fireworksRunning) return; // Prevent multiple triggers
+            fireworksRunning = true;
+            setTimeout(() => launchFirework(fwCanvas.width * 0.2, fwCanvas.height, fwCanvas.height * 0.3), 500);
+            setTimeout(() => launchFirework(fwCanvas.width * 0.8, fwCanvas.height, fwCanvas.height * 0.2), 1100);
+            setTimeout(() => launchFirework(fwCanvas.width * 0.5, fwCanvas.height, fwCanvas.height * 0.1), 1800);
+            setTimeout(() => launchFirework(fwCanvas.width * 0.3, fwCanvas.height, fwCanvas.height * 0.4), 2400);
+            setTimeout(() => launchFirework(fwCanvas.width * 0.7, fwCanvas.height, fwCanvas.height * 0.25), 3200);
+            animateFireworks();
+        }
+
+        // --- Static Theme-Colored Spark Cursor Particle System Logic ---
+        let lastSpawnTime = 0;
+        const spawnThrottle = 15; 
+
+        document.addEventListener("mousemove", function(e) {
+            const now = performance.now();
+            if (now - lastSpawnTime < spawnThrottle) return;
+            lastSpawnTime = now;
+            createSparkParticle(e.clientX, e.clientY);
+        });
+
+        function createSparkParticle(x, y) {
+            const spark = document.createElement("div");
+            spark.className = "magic-spark";
+            
+            const radius = Math.random() * 16 + 10; 
+            spark.style.width = radius + "px"; spark.style.height = radius + "px";
+            
+            const tones = ["#d9a05b", "#8b1a20", "#fce2be", "#ffffff"];
+            const selectedTone = tones[Math.floor(Math.random() * tones.length)];
+            
+            spark.style.backgroundColor = selectedTone;
+            spark.style.boxShadow = `0 0 ${Math.random() * 12 + 6}px ${selectedTone}`;
+            
+            const dx = (Math.random() - 0.5) * 5 + "px";
+            const dy = (Math.random() - 0.5) * 5 + "px"; 
+            spark.style.setProperty("--dx", dx); spark.style.setProperty("--dy", dy);
+            
+            spark.style.left = x + "px"; spark.style.top = y + "px";
+            document.body.appendChild(spark);
+            setTimeout(() => { spark.remove(); }, 800);
+        }
+
+        // --- Animated Moving Starfield Generation ---
+        document.addEventListener("DOMContentLoaded", function() {
+            const starfield = document.getElementById('starfield');
+            const fragment = document.createDocumentFragment();
+            const numStars = 70;
+
+            for (let i = 0; i < numStars; i++) {
+                let star = document.createElement('div');
+                star.classList.add('star');
+                let size = Math.random() * 2 + 1;
+                star.style.width = size + 'px'; star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + 'vw'; star.style.top = Math.random() * 100 + 'vh';
+                star.style.animationDelay = (Math.random() * 15) + 's';
+                star.style.animationDuration = (Math.random() * 15 + 10) + 's';
+                fragment.appendChild(star);
+            }
+            starfield.appendChild(fragment);
+
+            // --- CATEGORY FILTERING LOGIC ---
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const eventItems = document.querySelectorAll('.event-item');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filterValue = btn.getAttribute('data-filter');
+
+                    eventItems.forEach(item => {
+                        if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                            item.style.display = 'block';
+                            setTimeout(() => { item.style.opacity = '1'; item.style.transform = 'scale(1)'; }, 10);
+                        } else {
+                            item.style.opacity = '0'; item.style.transform = 'scale(0.95)';
+                            setTimeout(() => { item.style.display = 'none'; }, 300);
+                        }
+                    });
+                });
+            });
+
+            // --- MODAL POPUP LOGIC ---
+            const modal = document.getElementById('registrationModal');
+            const btnCloseModal = document.getElementById('closeModalBtn');
+            const btnCloseAction = document.getElementById('closeModalActionBtn');
+            const openModalBtns = document.querySelectorAll('.btn-open-modal');
+
+            const modalCat = document.getElementById('modalCat');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDesc = document.getElementById('modalDesc');
+            const modalPrize = document.getElementById('modalPrize');
+
+            openModalBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const card = this.closest('.event-card, .fs-card');
+                    
+                    const cat = card.querySelector('.ec-cat, .badge-flagship')?.innerText || 'FLAGSHIP EVENT';
+                    const title = card.querySelector('.ec-title, .fs-card-title').innerText;
+                    const desc = card.querySelector('.ec-desc, .fs-card-desc').innerText;
+                    const prize = card.querySelector('.ec-prize, .fs-prize').innerText;
+
+                    modalCat.innerText = cat;
+                    modalTitle.innerText = title;
+                    modalDesc.innerText = desc;
+                    modalPrize.innerText = prize;
+
+                    modal.classList.add('active');
+                });
+            });
+
+            const closeModal = () => { modal.classList.remove('active'); };
+            btnCloseModal.addEventListener('click', closeModal);
+            btnCloseAction.addEventListener('click', closeModal);
+
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) { closeModal(); }
+            });
+
+            // --- DUAL SPONSOR GALLERY LOGIC (1.5s interval) ---
+            function setupGallery(containerId) {
+                const slides = document.querySelectorAll(`#${containerId} .sponsor-slide`);
+                if (slides.length > 0) {
+                    let currentSlide = 0;
+                    setInterval(() => {
+                        slides[currentSlide].classList.remove('active');
+                        currentSlide = (currentSlide + 1) % slides.length;
+                        slides[currentSlide].classList.add('active');
+                    }, 1500);
+                }
+            }
+            setupGallery('gallery1');
+            setupGallery('gallery2');
+
+            // --- REAL CHATBOT WIDGET LOGIC ---
+            const waFabBtn = document.getElementById('waFabBtn');
+            const waWidget = document.getElementById('waWidget');
+            const closeWaWidget = document.getElementById('closeWaWidget');
+            const chatBody = document.getElementById('chatBody');
+            const chatInput = document.getElementById('chatInput');
+            const sendChatBtn = document.getElementById('sendChatBtn');
+            const navContactTriggers = document.querySelectorAll('.nav-contact-trigger');
+
+            const botAnswers = {
+                'date': 'Avanzare V19.0 is scheduled for 17 & 18 July 2026 at Kongu Engineering College, Perundurai.',
+                'events': 'The fest features Paper Presentation, Webathon, Silicon Sprint, Master Minds, Project Presentation, Software Hackathon, and Hardware Hackathon.',
+                'register': 'Register directly here: <a href="https://sponsortariff.my.canva.site/main-brochure" target="_blank" rel="noopener noreferrer">Brochure</a> | <a href="https://unstop.com/p/avanzare-v190-national-level-tech-fest-kongu-engineering-college-kec-erode-1695426?utm_medium=Share&utm_source=ieeekecu62817&utm_campaign=Competitions" target="_blank" rel="noopener noreferrer">Tech Fest</a> | <a href="https://unstop.com/hackathons/avanzare-v190-24-hour-national-level-hackathon-kongu-engineering-college-1690425?lb=Hppko0Iy&utm_medium=Share&utm_source=ieeekecu62817&utm_campaign=Online_coding_challenge" target="_blank" rel="noopener noreferrer">Hackathon</a>.',
+                'accomodation': 'Accommodation registration is available here: <a href="https://docs.google.com/forms/d/e/1FAIpQLSeMruNUYtjDF2P1o8AbRKys7WW9wTLHG3Hyyjw8UIHM_rsRiw/viewform" target="_blank" rel="noopener noreferrer">Accommodation Form</a>.',
+                'venue': 'The event venue is Kongu Engineering College, Perundurai.',
+                'contact': 'Contact: <a href="mailto:ieeekec24@gmail.com">ieeekec24@gmail.com</a> | +91 63699 78859 | Kongu Engineering College, Perundurai.',
+                'prize': 'The total prize pool shown on the page is ₹50,000. The Tech Fest package is ₹219 per head and the hackathon packages are ₹420 per head.',
+                'sponsors': 'Sponsors include the Design Partner, Gold Sponsor, Industry Partner, Media Partner, Pamphlet Partner, Platform Partner, Registration Partner, Technical Partner, and Platinum Sponsor. More details are available in the <a href="https://sponsortariff.my.canva.site/" target="_blank" rel="noopener noreferrer">Sponsor Tariff</a> page.'
+            };
+
+            function appendMessage(sender, text) {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `chat-msg ${sender}`;
+                msgDiv.innerHTML = text;
+                chatBody.appendChild(msgDiv);
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }
+
+            function getBotReply(inputText) {
+                const text = (inputText || '').toLowerCase().trim();
+                if (!text) {
+                    return 'Please type a question such as “register”, “accommodation”, “venue”, “contact”, or “sponsors”.';
+                }
+
+                if (/(date|day|when|schedule|timing|time|17|18|july)/.test(text)) {
+                    return botAnswers.date;
+                }
+                if (/(event|events|competition|competitions|hackathon|presentation|webathon|master|silicon|puzzle)/.test(text)) {
+                    return botAnswers.events;
+                }
+                if (/(register|registration|participate|join|apply|signup|unstop|brochure)/.test(text)) {
+                    return botAnswers.register;
+                }
+                if (/(accommodation|stay|hotel|hostel|room|lodging)/.test(text)) {
+                    return botAnswers.accomodation;
+                }
+                if (/(venue|location|place|college|campus|perundurai)/.test(text)) {
+                    return botAnswers.venue;
+                }
+                if (/(contact|email|phone|number|call|whatsapp|reach)/.test(text)) {
+                    return botAnswers.contact;
+                }
+                if (/(prize|pool|fee|cost|price|amount|₹|rupee|rupees)/.test(text)) {
+                    return botAnswers.prize;
+                }
+                if (/(sponsor|sponsors|partner|patron|tariff)/.test(text)) {
+                    return botAnswers.sponsors;
+                }
+                if (/(ambassador|application|apply)/.test(text)) {
+                    return 'Ambassador applications are available here: <a href="https://docs.google.com/forms/u/1/d/e/1FAIpQLSereoK-mRIyxorxfecQKm5si1U6loz2HSva6-atoiNI3tXWfQ/viewform?usp=send_form" target="_blank" rel="noopener noreferrer">Ambassador Form</a>.';
+                }
+
+                return 'I can help with dates, events, registration, accommodation, venue, sponsors, contact details, and prizes. Try a keyword like “register”, “accommodation”, “venue”, or “contact”.';
+            }
+
+            function handleChatSubmit(messageText) {
+                const text = (messageText || '').trim();
+                if (!text) return;
+                appendMessage('user', text);
+                setTimeout(() => {
+                    appendMessage('bot', getBotReply(text));
+                }, 500);
+            }
+
+            const toggleChat = (e) => {
+                if(e) e.preventDefault();
+                waWidget.classList.toggle('open');
+            };
+            
+            waFabBtn.addEventListener('click', toggleChat);
+            closeWaWidget.addEventListener('click', () => waWidget.classList.remove('open'));
+            
+            navContactTriggers.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    waWidget.classList.add('open');
+                });
+            });
+
+            document.querySelectorAll('.chat-opt-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const question = btn.innerText;
+                    const key = btn.getAttribute('data-key');
+                    
+                    handleChatSubmit(question);
+                    setTimeout(() => {
+                        appendMessage('bot', botAnswers[key] || 'I can help with dates, events, registration, accommodation, venue, sponsors, and contact details.');
+                    }, 600);
+                });
+            });
+
+            sendChatBtn.addEventListener('click', () => {
+                const value = chatInput.value;
+                chatInput.value = '';
+                handleChatSubmit(value);
+            });
+
+            chatInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const value = chatInput.value;
+                    chatInput.value = '';
+                    handleChatSubmit(value);
+                }
+            });
+        });
+
+        // --- Navbar Scroll Effect ---
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 40) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // --- Live Countdown Script ---F
+        const targetDate = new Date("Jul 17, 2026 09:30:00").getTime();
+        const elDays = document.getElementById("cd-days");
+        const elHours = document.getElementById("cd-hours");
+        const elMins = document.getElementById("cd-mins");
+        const elSecs = document.getElementById("cd-secs");
+
+        setInterval(function() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance > 0) {
+                elDays.innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
+                elHours.innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+                elMins.innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                elSecs.innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            }
+        }, 1000);
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
